@@ -10,7 +10,7 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host_name = socket.gethostname()
 host_ip = socket.gethostbyname(host_name)
 print('HOST IP:', host_ip)
-port = 9999
+port = 1024
 socket_address = (host_ip, port)
 dim = (800, 600)
 
