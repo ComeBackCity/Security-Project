@@ -153,5 +153,20 @@ int main()
         cerr << "Error in SYN + ACK" << endl;
     }
 
+    update_seq_and_ack(packetBuffer, &seqnum, &acknum);
+
+	/* Step 3: Send the ACK-packet, with updated numbers */
+	memset(packetBuffer, 0, DATAGRAM_LEN);
+	gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
+	create_raw_datagram(packetBuffer, &pBufferLen, ACK_PACKET, &src, &dest, dataBuffer, sBufferLen);
+	// dump_packet(pckbuf, pckbuflen);
+	if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr*)&dest, 
+					sizeof(struct sockaddr))) < 0) {
+		printf("failed.\n");
+		perror("ERROR:");
+		
+	}
+	free(dataBuffer);
+
     return 0;
 }
