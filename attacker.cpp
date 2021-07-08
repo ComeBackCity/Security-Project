@@ -134,9 +134,9 @@ int main()
     }
     cout << "Done configuring socket" << endl;
 
+    // SYN packet
     memset(packetBuffer, 0, PACKET_LEN);
     create_raw_datagram(packetBuffer, &pBufferLen, SYN_PACKET, &src, &dest, NULL, 0);
-    // dump_packet(packetBuffer, pBufferLen);
     if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr *)&dest,
                        sizeof(struct sockaddr))) < 0)
     {
@@ -144,9 +144,8 @@ int main()
         cerr << "Error in SYN" << endl;
     }
 
-     pBufferLen = receive_packet(sockfd, packetBuffer, DATAGRAM_LEN, &src);
-//    pBufferLen = recvfrom(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr *)&dest, (socklen_t *)sizeof(struct sockaddr));
-//    // dump_packet(pckbuf, pckbuflen);
+    // SYN + ACK packet
+    pBufferLen = receive_packet(sockfd, packetBuffer, DATAGRAM_LEN, &src);
     if (pBufferLen <= 0)
     {
         cout << "Failed" << endl;
@@ -155,11 +154,10 @@ int main()
 
     update_seq_and_ack(packetBuffer, &seqnum, &acknum);
 
-	/* Step 3: Send the ACK-packet, with updated numbers */
+    // ACK packet
 	memset(packetBuffer, 0, DATAGRAM_LEN);
 	gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
 	create_raw_datagram(packetBuffer, &pBufferLen, ACK_PACKET, &src, &dest, dataBuffer, sBufferLen);
-	// dump_packet(pckbuf, pckbuflen);
 	if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr*)&dest, 
 					sizeof(struct sockaddr))) < 0) {
 		printf("failed.\n");
@@ -167,6 +165,7 @@ int main()
 		
 	}
 	free(dataBuffer);
+
 
     return 0;
 }
