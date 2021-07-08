@@ -1,7 +1,0 @@
-https://www.binarytides.com/syn-flood-dos-attack/
-
-https://github.com/AsifTanvir/CSE406_OPT_TCP_ACK_Attack
-
-https://github.com/montaser55/Optimistic-TCP-ACK-Attack
-
-https://github.com/skratpa/rawsock?fbclid=IwAR2vEAWnQ0wc9YMw2qvNHyZalgGuYRo3MxCWHIBCjgAP0nU2jNqOhgkqXTs
