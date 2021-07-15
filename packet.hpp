@@ -112,6 +112,18 @@ void update_seq_and_ack(char *pck, uint32_t *seq, uint32_t *ack)
 	*ack = *ack + 1;
 }
 
+void force_update_seq_and_ack(char *pck, uint32_t *seq, uint32_t *ack, int index, int windowSize)
+{
+	uint32_t seqnum, acknum;
+	/* Read sequence number */
+	memcpy(&seqnum, (pck + 24), 4);
+	/* Read acknowledgement number */
+	memcpy(&acknum, (pck + 28), 4);
+	/* Convert network to host byte order */
+	*seq = ntohl(1);
+	*ack = ntohl(seqnum);
+	*ack = *ack + (index + 1 )* windowSize;
+}
 
 void gather_packet_data(char *databuf, int *datalen, int seqnum, 
 		int acknum, char *pld, int pldlen) 
