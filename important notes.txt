@@ -8,3 +8,8 @@ https://github.com/skratpa/rawsock?fbclid=IwAR2vEAWnQ0wc9YMw2qvNHyZalgGuYRo3MxCW
 
 command for turning off DROP packets:
 sudo iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
+
+to kill a process on a PORT_NUMBER:
+sudo fuser -k PORT_NUMBER/tcp
+
+sudo fuser -n tcp -k PORT_NUMBER
