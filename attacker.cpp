@@ -170,8 +170,6 @@ int main()
         cerr << "Error in receing packet from server" << endl;
     }
 
-    // gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
-
     // start of attack
     for(int i=0; i<500; i++)
     {
@@ -187,25 +185,6 @@ int main()
         }
         sleep(1);
     }
-
-    // pBufferLen = receive_packet(sockfd, packetBuffer, DATAGRAM_LEN, &src);
-    // if (pBufferLen <= 0)
-    // {
-    //     cout << "Failed" << endl;
-    //     cerr << "Error in receing packet from server" << endl;
-    // }
-
-    // update_seq_and_ack(packetBuffer, &seqnum, &acknum);
-
-    // memset(packetBuffer, 0, DATAGRAM_LEN);
-    // gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
-    // create_raw_datagram(packetBuffer, &pBufferLen, ACK_PACKET, &src, &dest, dataBuffer, sBufferLen);
-    // if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr*)&dest,
-    // 				sizeof(struct sockaddr))) < 0) {
-    // 	printf("failed.\n");
-    // 	perror("ERROR:");
-
-    // }
 
     free(dataBuffer);
     return 0;
