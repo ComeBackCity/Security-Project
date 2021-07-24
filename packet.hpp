@@ -22,7 +22,7 @@
 #define SYN_PACKET 4
 #define FIN_PACKET 5
 
-struct pseudohdr {
+struct pseudoheader {
 	u_int32_t source_addr;
 	u_int32_t dest_addr;
 	u_int8_t placeholder;
@@ -58,7 +58,7 @@ uint16_t in_cksum_tcp(struct tcphdr *tcp_hdr, struct sockaddr_in *src,
 		struct sockaddr_in *dst, int len)
 {
 	/* The pseudoheader used to calculate the checksum */
-	struct pseudohdr psh;
+	struct pseudoheader psh;
 	char *psd;
 	int psd_sz;
 
@@ -70,12 +70,12 @@ uint16_t in_cksum_tcp(struct tcphdr *tcp_hdr, struct sockaddr_in *src,
 	psh.tcp_length = htons(sizeof(struct tcphdr) + OPT_SIZE + len);
 
 	/* Paste everything into the pseudogram */
-	psd_sz = sizeof(struct pseudohdr) + sizeof(struct tcphdr) + OPT_SIZE + len;
+	psd_sz = sizeof(struct pseudoheader) + sizeof(struct tcphdr) + OPT_SIZE + len;
 	psd = (char *)malloc(psd_sz);
 	/* Copy the pseudo-header into the pseudogram */
-	memcpy(psd, (char *)&psh, sizeof(struct pseudohdr));
+	memcpy(psd, (char *)&psh, sizeof(struct pseudoheader));
 	/* Attach the TCP-header and -content after the pseudo-header */
-	memcpy(psd + sizeof(struct pseudohdr), tcp_hdr, 
+	memcpy(psd + sizeof(struct pseudoheader), tcp_hdr, 
 			sizeof(struct tcphdr) + OPT_SIZE + len);
 
 	/* Return the checksum of the TCP-header */
@@ -184,7 +184,6 @@ uint32_t setup_ip_hdr(struct iphdr *ip_hdr, struct sockaddr_in *src,
 	ip_hdr->ihl = 0x5;
 	ip_hdr->tos = 0;
 	ip_hdr->tot_len = sizeof(struct iphdr) + OPT_SIZE + sizeof(struct tcphdr) + len;
-	printf("Length of IP-Hdr: %d\n", ip_hdr->tot_len);
 	ip_hdr->id = htonl(rand() % 65535);
 	ip_hdr->frag_off = 0;
 	ip_hdr->ttl = 0xff;

